@@ -1,34 +1,34 @@
-#libraries 
-import numpy as np 
-import math  
-import matplotlib.pyplot as plt  
-import scipy.constants as cte  
-from mpl_toolkits import mplot3d  
-from sympy import *  
-from matplotlib import cm  
-from scipy.integrate import quad  
-import matplotlib.colors as colors  
-import matplotlib.cbook as cbook  
-from matplotlib import cm  
-from sklearn.linear_model import LinearRegression  
+#libraries
+import numpy as np
+import math
+import matplotlib.pyplot as plt
+import scipy.constants as cte
+from mpl_toolkits import mplot3d
+from sympy import *
+from matplotlib import cm
+from scipy.integrate import quad
+import matplotlib.colors as colors
+import matplotlib.cbook as cbook
+from matplotlib import cm
+from sklearn.linear_model import LinearRegression
 import random
 import pandas
 import sys
 
-#reading the file    
+#reading the file
 df = pandas.read_csv("./redshift.csv", sep = "\t", index_col = "ProcessingID")
 initial_redshift = df["galaxy.Redshift"].values
 
 #creating new data frame with needed columns
 #selected_columns = ["galaxy.Redshift", "galaxy.linemeas.Hbeta.LinemeasLineFluxDirectIntegration",
-#                    "galaxy.linemeas.Hbeta.LinemeasLineFlux","galaxy.linemeas.Hbeta.LinemeasOffset", 
+#                    "galaxy.linemeas.Hbeta.LinemeasLineFlux","galaxy.linemeas.Hbeta.LinemeasOffset",
 #                    "galaxy.linemeas.Hbeta.LinemeasVelocity", "galaxy.linemeas.Hbeta.LinemeasAmplitude",
 #                    "galaxy.linemeas.Hbeta.LinemeasLineWidth"]
 
 line = "Hbeta"
 
 selected_columns = ["galaxy.Redshift", "galaxy.linemeas." + line + ".LinemeasLineFluxDirectIntegration",
-                    "galaxy.linemeas." + line + ".LinemeasLineFlux","galaxy.linemeas." + line + ".LinemeasOffset", 
+                    "galaxy.linemeas." + line + ".LinemeasLineFlux","galaxy.linemeas." + line + ".LinemeasOffset",
                     "galaxy.linemeas." + line + ".LinemeasVelocity", "galaxy.linemeas." + line + ".LinemeasAmplitude",
                     "galaxy.linemeas." + line + ".LinemeasLineWidth"]
 
@@ -37,15 +37,15 @@ new_df = df[selected_columns]
 new_df = new_df.dropna()
 #cleaned_df = new_df
 #removing null and negative values in fluxes and amplitudes
-cleaned_df = new_df[(new_df["galaxy.linemeas." + line + ".LinemeasLineFluxDirectIntegration"] > 0) 
+cleaned_df = new_df[(new_df["galaxy.linemeas." + line + ".LinemeasLineFluxDirectIntegration"] > 0)
                     & (new_df["galaxy.linemeas." + line + ".LinemeasLineFlux"] > 0)
                     & (new_df["galaxy.linemeas." + line + ".LinemeasAmplitude"] > 0)]
 
 galaxies_id = cleaned_df.index.to_numpy()
 redshift = cleaned_df["galaxy.Redshift"].values
 
-#cleaned_df['Flux.relative.difference'] = (cleaned_df["galaxy.linemeas." + line + ".LinemeasLineFluxDirectIntegration"] 
-#                                          - cleaned_df["galaxy.linemeas." + line + ".LinemeasLineFlux"])/cleaned_df["galaxy.linemeas." + line + ".LinemeasLineFluxDirectIntegration"] 
+#cleaned_df['Flux.relative.difference'] = (cleaned_df["galaxy.linemeas." + line + ".LinemeasLineFluxDirectIntegration"]
+#                                          - cleaned_df["galaxy.linemeas." + line + ".LinemeasLineFlux"])/cleaned_df["galaxy.linemeas." + line + ".LinemeasLineFluxDirectIntegration"]
 
 
 #Hbeta
@@ -58,7 +58,7 @@ fwhm = cleaned_df["galaxy.linemeas." + line + ".LinemeasLineWidth"].values
 deviation = fwhm#/2.355
 
 #flux_diff = cleaned_df['Flux.relative.difference'].values
-#print("negative galaxies:", len(cleaned_df[(cleaned_df["galaxy.linemeas." + line + ".LinemeasLineFluxDirectIntegration"] <= 0) 
+#print("negative galaxies:", len(cleaned_df[(cleaned_df["galaxy.linemeas." + line + ".LinemeasLineFluxDirectIntegration"] <= 0)
 #                    & (cleaned_df["galaxy.linemeas." + line + ".LinemeasLineFlux"] <= 0)]))
 
 #arrays parameters
@@ -131,4 +131,3 @@ print("number of galaxies with calculated redshift:",1000 - np.isnan(initial_red
 print("number of galaxies with fitted Halpa line:", len(fluxfitted), "/1000")
 print("number of fitted Halpha galaxies with fit error under 10% :", num_gal_under10pct, "/1000")
 #print("galaxies with fitted Halpha fit error above 10% :", [galaxies_id[ind] for ind in flux_difference_above10pct_ind ])
-
