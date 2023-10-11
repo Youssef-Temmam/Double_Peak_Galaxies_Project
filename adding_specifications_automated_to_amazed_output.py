@@ -52,7 +52,7 @@ def kurtosis_line(array):
     n = len(array)
     return np.sum((array - mean_line(array))**4)/(n*(variance_line(array)**2))
 
-line_names  = np.array(['Halpha','Hbeta', 'Hgamma', '[OIII](doublet-1/3)', '[OIII](doublet-1)', 
+line_names  = np.array(['Halpha','Hbeta', 'Hgamma', '[OIII](doublet-1/3)', '[OIII](doublet-1)',
                    '[NII](doublet-1)', '[SII]6716', '[SII]6731'])
 
 #opening redshift file and reading it
@@ -61,9 +61,9 @@ df = pandas.read_csv("output_100_000_DP_galaxies/redshift.csv", sep = "\t", inde
 #cleaning data frame from nan values in redshift
 df.dropna(subset = ['galaxy.Redshift'])
 
-#cleaning data frame from negative fluxes and fits 
+#cleaning data frame from negative fluxes and fits
 #for line in line_names:
-#    df = df[(df["galaxy.linemeas." + line + ".LinemeasLineFluxDirectIntegration"] > 0) 
+#    df = df[(df["galaxy.linemeas." + line + ".LinemeasLineFluxDirectIntegration"] > 0)
 #                    & (df["galaxy.linemeas." + line + ".LinemeasLineFlux"] > 0)]
 
 
@@ -80,12 +80,12 @@ for line in line_names:
     #computing SNR and adding it to the data frame
     df[line + '.SNR'] = snr(line_fitted_flux, line_fitted_continuum)
 
-    #computing skewneess and kurtosis 
+    #computing skewneess and kurtosis
     line_Skewness = np.zeros(len(df))*np.nan
     line_Kurtosis = np.zeros(len(df))*np.nan
 
     for galaxy, index in zip(df.index, range(len(df))):
-        #taking deviation and wavelength 
+        #taking deviation and wavelength
         sigma_line = line_deviations[index]
         lambda_line = line_wavelengths[index]
         coeff0_line = line_continuum_coefficient0[index]
@@ -93,7 +93,7 @@ for line in line_names:
         coeff2_line = line_continuum_coefficient2[index]
 
         #print('before opening', '>>gaalxy ID:', galaxy, '>>line:', line, '>>deviation:', sigma_line, '>>wavelength:', lambda_line)
-        
+
         #computing Skewness and Kurtosis only for fitted lines
         if np.isnan(lambda_line) == False and lambda_line < 9000:
             #opening galaxy spectrum .fits file
@@ -118,7 +118,7 @@ for line in line_names:
                 if line == '[SII]6716]':
                     spectrum_table_line = spectrum_table.loc[lambda_line - 2.5*sigma_line: lambda_line + 2.5*sigma_line]
                 if line == '[SII]6731':
-                    spectrum_table_line = spectrum_table.loc[lambda_line - 2.5*sigma_line: lambda_line + 2.5*sigma_line]                   
+                    spectrum_table_line = spectrum_table.loc[lambda_line - 2.5*sigma_line: lambda_line + 2.5*sigma_line]
                 else:
                     spectrum_table_line = spectrum_table.loc[lambda_line - 4*sigma_line: lambda_line + 4*sigma_line]
                 line_spectra = spectrum_table_line['flux']
@@ -134,4 +134,3 @@ for line in line_names:
 
 #saving data frame in a new file
 df.to_csv('redshift_updated.csv', sep = '\t')
-#print(df)
